@@ -25,12 +25,14 @@ void output();                          /*输出快速傅里叶变换的结果*/
 int main()
 {
     int i;                             /*输出结果*/
+    float dataA[N];
+
     /*顺序生成书输入*/
     for (i = 0; i < N; i++)
     {
-        x[i].real = i;
+        x[i].real = 0.01*i;
         x[i].img = 0;
-     //   printf("x[%d].real = %f\n", i, x[i].real);
+    //    printf("x[%d].real = %f\n", i, x[i].real);
     }
     /*输入从文件写入*/
     //FILE* fp;
@@ -62,6 +64,15 @@ int main()
     output();                //调用输出傅里叶变换结果函数
  
     free(Wn);
+
+    //求出幅度频率谱,dataA[i] = sqrt(dataR[i]*dataR[i]+dataI[i]*dataI[i])
+    for (i = 0; i < N; i++)
+    {
+        dataA[i] = sqrt((x[i].real) *  (x[i].real) +  (x[i].img) *  (x[i].img));
+        dataA[i] = dataA[i] / N;
+        printf("dataA[%d]: %f\n", i, dataA[i]);
+    }
+
     return 0;
 }
 
@@ -85,6 +96,14 @@ void fft(complex* IN_X, int n)
                 bottom = sub(IN_X[j + k], product);
                 IN_X[j + k] = top;
                 IN_X[j + k + L] = bottom;
+
+                //IN_X[j + k].real = IN_X[j + k].real/2;
+                //IN_X[j + k].img = IN_X[j + k].img / 2;
+                //IN_X[j + k + L].real = IN_X[j + k + L].real/ 2;
+                //IN_X[j + k + L].img = IN_X[j + k + L].img / 2;
+
+            //    printf("product(%d %d %d) = %f + j*%f \n", i, j, k,  (product.real),  (product.img));
+            //   printf("mul1: %f %f\t mul2: %f %f\n",  (IN_X[j + k + L].real),  (IN_X[j + k + L].img), Wn[n * k / 2 / L].real, Wn[n * k / 2 / L].img);
             }
         }
     }
